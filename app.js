@@ -33,7 +33,7 @@
     return {
       screen: "home",
       search: "",
-      resourceFilters: { stage: "all", type: "all", pricing: "all", level: "all", lang: "all", status: "all" },
+      resourceFilters: { kind: "video", stage: "all", platform: "all", access: "all", availability: "all", type: "all", pricing: "all", level: "all", lang: "all", status: "all" },
       toolFilters: { stage: "all", pricing: "all", search: "" },
       activeNode: null,
       activeResource: null,
@@ -115,6 +115,18 @@
   function pricingBadge(pricing) {
     const value = pricing || "unknown";
     return `<span class="badge badge-${value}">${pricingLabels[value] || pricingLabels.unknown}</span>`;
+  }
+
+  function accessBadge(resource) {
+    const access = resource.accessMode || (resource.directUrl ? "网页可播" : "网页直达");
+    const tone = access === "网页可播" ? "ok" : access === "需登录" ? "login" : access === "建议App打开" ? "app" : "muted";
+    return `<span class="access-badge access-${tone}">${access}</span>`;
+  }
+
+  function availabilityBadge(resource) {
+    const labels = { available: "链接已核验", unavailable: "链接失效", pending: "待核验" };
+    const value = resource.availability || "pending";
+    return `<span class="availability availability-${value}">${labels[value] || value}</span>`;
   }
 
   function stageColor(stageId) { return stageById(stageId)?.color || "green"; }
@@ -207,7 +219,12 @@
     const filter = state.resourceFilters;
     const q = state.search.trim().toLowerCase();
     const node = resource.nodeId ? nodeById(resource.nodeId) : null;
-    if (q && ![resource.title, resource.summary, resource.platform, resource.type, resource.lang, node?.title].filter(Boolean).join(" ").toLowerCase().includes(q)) return false;
+    if (filter.kind === "video" && !(resource.type === "视频" && resource.directUrl && !resource.searchEntry)) return false;
+    if (filter.kind === "discovery" && !resource.searchEntry) return false;
+    if (filter.platform !== "all" && resource.platform !== filter.platform) return false;
+    if (filter.access !== "all" && (resource.accessMode || "网页直达") !== filter.access) return false;
+    if (filter.availability !== "all" && (resource.availability || "pending") !== filter.availability) return false;
+    if (q && ![resource.title, resource.summary, resource.creator, resource.platform, resource.type, resource.lang, resource.episodeLabel, resource.accessMode, node?.title].filter(Boolean).join(" ").toLowerCase().includes(q)) return false;
     if (filter.stage !== "all" && resource.stage !== filter.stage) return false;
     if (filter.type !== "all" && resource.type !== filter.type) return false;
     if (filter.pricing !== "all" && resource.pricing !== filter.pricing) return false;
@@ -224,14 +241,22 @@
     const favorite = Boolean(state.favorites[resource.id]);
     const done = Boolean(resource.nodeId && state.completedNodes[resource.nodeId]);
     const initial = (resource.platform || "资").slice(0, 1);
-    const url = safeExternalUrl(resource.url);
-    return `<article class="resource-row" data-resource-id="${resource.id}"><div class="resource-title"><span class="resource-icon">${initial}</span><div><a class="resource-link" href="${url}" target="_blank" rel="noreferrer">${resource.title} <span aria-hidden="true">↗</span></a><small>${resource.summary || "个人收录资源"}${node ? ` · ${node.title}` : ""}</small></div></div><span class="platform">${resource.platform}</span><span class="level">${resource.level || "基础"}</span><span>${pricingBadge(resource.pricing)}</span><button class="status-button ${done ? "done" : ""}" data-action="toggle-node" data-node-id="${resource.nodeId || ""}" ${resource.nodeId ? "" : "disabled"}><span class="status-dot"></span>${done ? "已掌握" : "未掌握"}</button><div class="row-actions"><button class="row-action ${favorite ? "active" : ""}" data-action="toggle-favorite" data-resource-id="${resource.id}" title="收藏">${favorite ? "★" : "☆"}</button><a class="row-action row-open" href="${url}" target="_blank" rel="noreferrer" title="直接打开">打开 ↗</a><button class="row-action" data-action="open-resource" data-resource-id="${resource.id}" title="查看详情">详情</button></div></article>`;
+    const url = safeExternalUrl(resource.directUrl || resource.url);
+    const meta = [resource.creator, resource.duration, resource.episodeLabel, node?.title].filter(Boolean).join(" · ");
+    return `<article class="resource-row ${resource.searchEntry ? "discovery-row" : ""}" data-resource-id="${resource.id}"><div class="resource-title"><span class="resource-icon">${initial}</span><div><a class="resource-link" href="${url}" target="_blank" rel="noreferrer">${resource.title} <span aria-hidden="true">↗</span></a><small>${meta || resource.summary || "个人收录资源"}</small><div class="resource-status-line">${accessBadge(resource)} ${availabilityBadge(resource)} ${resource.seriesUrl ? `<a class="series-link" href="${safeExternalUrl(resource.seriesUrl)}" target="_blank" rel="noreferrer">看完整合集 ↗</a>` : ""}</div></div></div><span class="platform">${resource.platform}</span><span class="level">${resource.episodeLabel || resource.level || "基础"}</span><span>${pricingBadge(resource.pricing)}</span><button class="status-button ${done ? "done" : ""}" data-action="toggle-node" data-node-id="${resource.nodeId || ""}" ${resource.nodeId ? "" : "disabled"}><span class="status-dot"></span>${done ? "已掌握" : "未掌握"}</button><div class="row-actions"><button class="row-action ${favorite ? "active" : ""}" data-action="toggle-favorite" data-resource-id="${resource.id}" title="收藏">${favorite ? "★" : "☆"}</button><a class="row-action row-open" href="${url}" target="_blank" rel="noreferrer" title="立即观看">立即观看 ↗</a><button class="row-action" data-action="open-resource" data-resource-id="${resource.id}" title="查看详情">详情</button></div></article>`;
   }
 
   function renderLibrary() {
     const list = visibleResources().filter(resourceMatches);
     const nodeLabel = state.activeNode ? nodeById(state.activeNode)?.title : "全部节点";
-    return `<main class="workspace-page"><div class="workspace-heading"><div><span class="eyebrow">RESOURCE LIBRARY</span><h1>学习资源库</h1><p>${state.activeNode ? `当前节点：${nodeLabel}` : "按第一张路线图整理的中文优先资源与平台入口"}</p></div><div class="workspace-actions"><button class="button button-ghost button-small" data-action="import-data">导入数据</button><button class="button button-ghost button-small" data-action="export-data">导出数据</button><button class="button button-primary button-small" data-action="open-add-resource">＋ 新增资源</button></div></div><div class="workspace-layout">${renderSidebar()}<section class="library-main"><div class="surface filter-bar"><label class="search-control"><span>⌕</span><input data-input="resource-search" value="${escapeAttr(state.search)}" placeholder="搜索资源、知识点、平台" /></label><select data-filter="stage"><option value="all">全部阶段</option>${DATA.STAGES.map((stage) => `<option value="${stage.id}" ${state.resourceFilters.stage === stage.id ? "selected" : ""}>${stage.short} · ${stage.title}</option>`).join("")}</select><select data-filter="type"><option value="all">全部类型</option>${[...new Set(visibleResources().map((resource) => resource.type))].map((type) => `<option value="${type}" ${state.resourceFilters.type === type ? "selected" : ""}>${type}</option>`).join("")}</select><select data-filter="pricing"><option value="all">全部费用</option>${Object.entries(pricingLabels).map(([key, label]) => `<option value="${key}" ${state.resourceFilters.pricing === key ? "selected" : ""}>${label}</option>`).join("")}</select><select data-filter="level"><option value="all">全部难度</option>${["入门", "基础", "进阶", "高级"].map((level) => `<option ${state.resourceFilters.level === level ? "selected" : ""}>${level}</option>`).join("")}</select><select data-filter="status"><option value="all">全部状态</option><option value="todo" ${state.resourceFilters.status === "todo" ? "selected" : ""}>待学习</option><option value="done" ${state.resourceFilters.status === "done" ? "selected" : ""}>已掌握</option></select><div class="filter-summary"><span>显示 <strong>${list.length}</strong> 条资源${state.activeNode ? " · 点击左侧节点可切换" : ""}</span><button class="button button-ghost button-small" data-action="reset-filters">重置筛选</button></div></div><div class="surface resource-list">${list.length ? `<div class="list-head"><span>资源名称</span><span>平台</span><span>难度</span><span>费用</span><span>学习状态</span><span></span></div>${list.map(renderResourceRow).join("")}` : `<div class="empty-state"><strong>没有匹配的资源</strong><span>试试清空筛选，或换一个关键词。</span></div>`}</div></section></div>${state.activeResource ? renderDrawer() : ""}</main>`;
+    const directTotal = visibleResources().filter((resource) => resource.type === "视频" && resource.directUrl && !resource.searchEntry).length;
+    const discoveryTotal = visibleResources().filter((resource) => resource.searchEntry).length;
+    const platforms = [...new Set(visibleResources().filter((resource) => resource.type === "视频" && resource.directUrl && !resource.searchEntry).map((resource) => resource.platform))];
+    const allSeries = DATA.SERIES_CATALOG || [];
+    const series = state.resourceFilters.stage === "all"
+      ? DATA.STAGES.map((stage) => allSeries.find((item) => item.stage === stage.id)).filter(Boolean)
+      : allSeries.filter((item) => item.stage === state.resourceFilters.stage);
+    return `<main class="workspace-page"><div class="workspace-heading"><div><span class="eyebrow">RESOURCE LIBRARY · DIRECT VIDEO</span><h1>学习资源库</h1><p>${state.activeNode ? `当前节点：${nodeLabel}` : "默认显示具体视频直达链接；搜索页已移入独立的继续查找区"}</p></div><div class="workspace-actions"><button class="button button-ghost button-small" data-action="import-data">导入数据</button><button class="button button-ghost button-small" data-action="export-data">导出数据</button><button class="button button-primary button-small" data-action="open-add-resource">＋ 新增资源</button></div></div><div class="video-summary"><div><strong>${directTotal}</strong><span>条具体视频</span></div><div><strong>${DATA.NODES.length}</strong><span>个能力节点 · 每节点 3 条</span></div><div><strong>${platforms.length}</strong><span>个平台</span></div><button class="button button-ghost button-small" data-action="show-discovery">继续查找（${discoveryTotal}）</button></div><div class="workspace-layout">${renderSidebar()}<section class="library-main"><div class="surface filter-bar"><label class="search-control"><span>⌕</span><input data-input="resource-search" value="${escapeAttr(state.search)}" placeholder="搜索视频、UP主、知识点、分P" /></label><select data-filter="kind"><option value="video" ${state.resourceFilters.kind === "video" ? "selected" : ""}>直达视频</option><option value="all" ${state.resourceFilters.kind === "all" ? "selected" : ""}>全部资源</option><option value="discovery" ${state.resourceFilters.kind === "discovery" ? "selected" : ""}>继续查找</option></select><select data-filter="stage"><option value="all">全部阶段</option>${DATA.STAGES.map((stage) => `<option value="${stage.id}" ${state.resourceFilters.stage === stage.id ? "selected" : ""}>${stage.short} · ${stage.title}</option>`).join("")}</select><select data-filter="platform"><option value="all">全部平台</option>${platforms.map((platform) => `<option value="${platform}" ${state.resourceFilters.platform === platform ? "selected" : ""}>${platform}</option>`).join("")}</select><select data-filter="access"><option value="all">全部访问方式</option>${["网页可播", "需登录", "建议App打开", "网页直达"].map((access) => `<option value="${access}" ${state.resourceFilters.access === access ? "selected" : ""}>${access}</option>`).join("")}</select><select data-filter="availability"><option value="all">全部链接状态</option><option value="available" ${state.resourceFilters.availability === "available" ? "selected" : ""}>链接已核验</option><option value="unavailable" ${state.resourceFilters.availability === "unavailable" ? "selected" : ""}>链接失效</option><option value="pending" ${state.resourceFilters.availability === "pending" ? "selected" : ""}>待核验</option></select><select data-filter="pricing"><option value="all">全部费用</option>${Object.entries(pricingLabels).map(([key, label]) => `<option value="${key}" ${state.resourceFilters.pricing === key ? "selected" : ""}>${label}</option>`).join("")}</select><select data-filter="level"><option value="all">全部难度</option>${["入门", "基础", "进阶", "高级"].map((level) => `<option value="${level}" ${state.resourceFilters.level === level ? "selected" : ""}>${level}</option>`).join("")}</select><select data-filter="status"><option value="all">全部状态</option><option value="todo" ${state.resourceFilters.status === "todo" ? "selected" : ""}>待学习</option><option value="done" ${state.resourceFilters.status === "done" ? "selected" : ""}>已掌握</option></select><div class="filter-summary"><span>显示 <strong>${list.length}</strong> 条${state.resourceFilters.kind === "video" ? "直达视频" : "资源"}${state.activeNode ? " · 点击左侧节点可切换" : ""}</span><button class="button button-ghost button-small" data-action="reset-filters">重置筛选</button></div></div><div class="surface series-strip"><div class="section-heading compact"><div><h2>完整系列课程</h2><p>点击合集名进入原平台系列页；节点视频仍使用具体分P直达。</p></div></div><div class="series-grid">${series.map((item) => `<a class="series-card" href="${safeExternalUrl(item.url)}" target="_blank" rel="noreferrer"><span class="series-platform">${item.platform} · ${item.bvid || "系列"}</span><strong>${item.title}</strong><small>${item.creator} · ${item.summary}</small><span>打开完整合集 ↗</span></a>`).join("")}</div></div><div class="surface resource-list">${list.length ? `<div class="list-head"><span>视频 / 作品</span><span>平台</span><span>分P / 难度</span><span>费用</span><span>学习状态</span><span></span></div>${list.map(renderResourceRow).join("")}` : `<div class="empty-state"><strong>没有匹配的资源</strong><span>试试清空筛选，或换一个平台、访问方式或节点。</span></div>`}</div></section></div>${state.activeResource ? renderDrawer() : ""}</main>`;
   }
 
   function renderRoadmap() {
@@ -272,7 +297,8 @@
     if (!resource) return "";
     const node = resource.nodeId ? nodeById(resource.nodeId) : null;
     const tools = node ? node.tools.map(toolById).filter(Boolean) : [];
-    return `<div class="drawer" data-action="close-drawer"><aside class="drawer-panel" data-drawer-panel="true"><div class="drawer-header"><div><span class="eyebrow">RESOURCE DETAIL · ${resource.platform}</span><h2>${resource.title}</h2><p>${resource.summary || "个人收录资源"}</p></div><button class="icon-button" data-action="close-drawer" aria-label="关闭">×</button></div><div class="detail-block"><h4>费用与学习信息</h4><div class="detail-chips">${pricingBadge(resource.pricing)}<span class="detail-chip">${resource.lang || "中文"}</span><span class="detail-chip">${resource.level || "基础"}</span><span class="detail-chip">${resource.type}</span></div></div>${node ? `<div class="detail-block"><h4>对应能力节点</h4><p><strong>${node.title}</strong><br />${node.goal}<br /><br />练习：${node.task}<br />掌握标准：${node.mastery}</p></div>` : ""}${tools.length ? `<div class="detail-block"><h4>所需工具</h4><div class="detail-chips">${tools.map((tool) => `<span class="detail-chip">${tool.name}</span>`).join("")}</div></div>` : ""}<div class="detail-actions"><a class="button button-primary" href="${safeExternalUrl(resource.url)}" target="_blank" rel="noreferrer">打开资源 ↗</a>${node ? `<button class="button button-ghost" data-action="toggle-node" data-node-id="${node.id}">${isDone(node.id) ? "取消已掌握" : "标记为已掌握"}</button>` : ""}<button class="button button-ghost" data-action="toggle-favorite" data-resource-id="${resource.id}">${state.favorites[resource.id] ? "取消收藏" : "加入收藏"}</button><button class="button button-ghost" data-action="edit-resource" data-resource-id="${resource.id}">编辑资源</button><button class="button button-ghost" data-action="hide-resource" data-resource-id="${resource.id}">隐藏资源</button></div><div class="detail-block"><h4>安全提醒</h4><p>仅在个人设备、隔离靶场或明确授权的测试范围内使用相关知识与工具。任何真实目标都应先获得书面授权。</p></div></aside></div>`;
+    const url = safeExternalUrl(resource.directUrl || resource.url);
+    return `<div class="drawer" data-action="close-drawer"><aside class="drawer-panel" data-drawer-panel="true"><div class="drawer-header"><div><span class="eyebrow">RESOURCE DETAIL · ${resource.platform}</span><h2>${resource.title}</h2><p>${resource.summary || "个人收录资源"}</p></div><button class="icon-button" data-action="close-drawer" aria-label="关闭">×</button></div><div class="detail-block"><h4>视频信息</h4><div class="detail-chips">${pricingBadge(resource.pricing)}${accessBadge(resource)}${availabilityBadge(resource)}<span class="detail-chip">${resource.lang || "中文"}</span><span class="detail-chip">${resource.level || "基础"}</span><span class="detail-chip">${resource.duration || "时长未标注"}</span><span class="detail-chip">${resource.episodeLabel || "具体作品"}</span></div>${resource.creator ? `<p class="detail-meta">作者：${resource.creator} · 发布：${resource.publishedAt || "未标注"} · 核验：${resource.verifiedAt || "未标注"}</p>` : ""}${resource.seriesUrl ? `<p class="detail-meta"><a href="${safeExternalUrl(resource.seriesUrl)}" target="_blank" rel="noreferrer">打开完整合集 ↗</a></p>` : ""}</div>${node ? `<div class="detail-block"><h4>对应能力节点</h4><p><strong>${node.title}</strong><br />${node.goal}<br /><br />练习：${node.task}<br />掌握标准：${node.mastery}</p></div>` : ""}${tools.length ? `<div class="detail-block"><h4>所需工具</h4><div class="detail-chips">${tools.map((tool) => `<span class="detail-chip">${tool.name}</span>`).join("")}</div></div>` : ""}<div class="detail-actions"><a class="button button-primary" href="${url}" target="_blank" rel="noreferrer">立即观看 ↗</a>${node ? `<button class="button button-ghost" data-action="toggle-node" data-node-id="${node.id}">${isDone(node.id) ? "取消已掌握" : "标记为已掌握"}</button>` : ""}<button class="button button-ghost" data-action="toggle-favorite" data-resource-id="${resource.id}">${state.favorites[resource.id] ? "取消收藏" : "加入收藏"}</button><button class="button button-ghost" data-action="edit-resource" data-resource-id="${resource.id}">编辑资源</button><button class="button button-ghost" data-action="hide-resource" data-resource-id="${resource.id}">隐藏资源</button></div><div class="detail-block"><h4>安全提醒</h4><p>仅在个人设备、隔离靶场或明确授权的测试范围内使用相关知识与工具。任何真实目标都应先获得书面授权。</p></div></aside></div>`;
   }
 
   function renderApp() {
@@ -298,7 +324,7 @@
     const node = nodeById(nodeId);
     if (!node) return;
     state.activeNode = nodeId;
-    state.resourceFilters = { ...state.resourceFilters, stage: "all", type: "all", pricing: "all", level: "all", lang: "all", status: "all" };
+    state.resourceFilters = { ...state.resourceFilters, kind: "video", stage: "all", platform: "all", access: "all", availability: "all", type: "all", pricing: "all", level: "all", lang: "all", status: "all" };
     state.screen = "resources";
     state.expandedStages[node.stage] = true;
     renderApp();
@@ -308,7 +334,7 @@
   function resetFilters() {
     state.search = "";
     state.activeNode = null;
-    state.resourceFilters = { stage: "all", type: "all", pricing: "all", level: "all", lang: "all", status: "all" };
+    state.resourceFilters = { kind: "video", stage: "all", platform: "all", access: "all", availability: "all", type: "all", pricing: "all", level: "all", lang: "all", status: "all" };
     state.toolFilters = { stage: "all", pricing: "all", search: "" };
     renderApp();
   }
@@ -349,6 +375,10 @@
       lang: existing?.lang || "中文",
       duration: existing?.duration || "按需",
       url: document.getElementById("resource-url").value.trim(),
+      directUrl: document.getElementById("resource-type").value === "视频" ? document.getElementById("resource-url").value.trim() : (existing?.directUrl || ""),
+      accessMode: existing?.accessMode || (document.getElementById("resource-type").value === "视频" ? "网页直达" : ""),
+      availability: existing?.availability || "pending",
+      verifiedAt: existing?.verifiedAt || "",
       summary: document.getElementById("resource-summary").value.trim(),
       custom: true,
       updatedAt: new Date().toISOString().slice(0, 10),
@@ -434,6 +464,7 @@
       persist(); renderApp(); showToast(state.favorites[id] ? "已加入收藏" : "已取消收藏");
     }
     if (action === "open-resource") { state.activeResource = target.dataset.resourceId; renderApp(); }
+    if (action === "show-discovery") { state.resourceFilters = { ...state.resourceFilters, kind: "discovery" }; state.screen = "resources"; renderApp(); }
     if (action === "close-drawer" && (!target.closest("[data-drawer-panel]") || target.tagName === "BUTTON")) { state.activeResource = null; renderApp(); }
     if (action === "close-modal") closeModal();
     if (action === "open-add-resource") openResourceModal();
