@@ -138,6 +138,36 @@ const RESOURCES = [
   { id: "r-vuln-search", title: "网络安全视频与图文检索入口", platform: "多平台", type: "课程", stage: "pentest", nodeId: "capstone", level: "基础", pricing: "free", lang: "中文", duration: "按需", summary: "从多个中文平台按知识点检索课程、笔记与项目复盘。", url: "https://www.zhihu.com/search?type=content&q=%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95", recommended: false },
 ];
 
+// 为路线图中尚未配置直链的节点补充中文平台检索入口，确保每个节点都有可开始的资源。
+const searchPlatforms = [
+  { name: "哔哩哔哩", type: "视频", base: "https://search.bilibili.com/all?keyword=" },
+  { name: "抖音", type: "视频", base: "https://www.douyin.com/search/" },
+  { name: "小红书", type: "图文", base: "https://www.xiaohongshu.com/search_result?keyword=" },
+  { name: "知乎", type: "图文", base: "https://www.zhihu.com/search?type=content&q=" },
+  { name: "CSDN", type: "图文", base: "https://so.csdn.net/so/search?q=" },
+];
+const configuredNodeIds = new Set(RESOURCES.map((resource) => resource.nodeId));
+NODES.filter((node) => !configuredNodeIds.has(node.id)).forEach((node, index) => {
+  const platform = searchPlatforms[index % searchPlatforms.length];
+  const keyword = `${node.title} 网络安全`;
+  RESOURCES.push({
+    id: `search-${node.id}`,
+    title: `${node.title} · 中文学习入口`,
+    platform: platform.name,
+    type: platform.type,
+    stage: node.stage,
+    nodeId: node.id,
+    level: node.level,
+    pricing: "free",
+    lang: "中文",
+    duration: "按需",
+    summary: `通过${platform.name}检索“${keyword}”，先完成知识目标，再回到节点练习。`,
+    url: `${platform.base}${encodeURIComponent(keyword)}`,
+    recommended: node.track === "core",
+    searchEntry: true,
+  });
+});
+
 const PRACTICES = [
   { id: "p-env", title: "搭建隔离实验环境", stage: "foundation", nodeId: "virtual-lab", level: "基础", outcome: "Kali 虚拟机 + 本地靶场 + 可恢复快照", safety: "只使用 NAT/Host-only 网络，不连接陌生目标。" },
   { id: "p-packet", title: "抓包解释一次登录请求", stage: "foundation", nodeId: "network-model", level: "基础", outcome: "标注 DNS、TCP、HTTP、Cookie 与响应状态", safety: "只分析本机或授权实验流量。" },
