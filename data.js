@@ -231,6 +231,22 @@ const DISCOVERY_RESOURCES = [
 
 const RESOURCES = [...VIDEO_RESOURCES, ...DISCOVERY_RESOURCES];
 
+// 靶场均为官方项目、公开训练平台或开源项目；只在个人隔离环境或平台授权范围内使用。
+const LABS = [
+  { id: "lab-pikachu", title: "Pikachu", category: "中文 Web 漏洞", stage: "web-vuln", nodeId: "sql-injection", level: "基础", pricing: "free", lang: "中文", deployment: "本地 · Docker / PHP", access: "开源项目", url: "https://github.com/zhuifengshaonianhanlu/pikachu", summary: "中文漏洞测试平台，适合 SQL 注入、XSS、CSRF、上传、SSRF、反序列化与越权入门。", safety: "仅部署在本地虚拟机或 Docker 网络中，不对公网开放。" },
+  { id: "lab-portswigger", title: "PortSwigger Web Security Academy", category: "Web 漏洞专项", stage: "web-vuln", nodeId: "burp-workflow", level: "基础", pricing: "free", lang: "英文", deployment: "在线浏览器", access: "需注册", url: "https://portswigger.net/web-security", summary: "SQLi、XSS、CSRF、SSRF、访问控制等互动实验，和 Burp 学习最配套。", safety: "实验环境由平台授权提供；不要将练习方法用于未授权站点。" },
+  { id: "lab-juice-shop", title: "OWASP Juice Shop", category: "现代 Web 综合", stage: "web-vuln", nodeId: "capstone", level: "基础", pricing: "free", lang: "英文", deployment: "在线 / Docker", access: "开源项目", url: "https://owasp.org/www-project-juice-shop/", summary: "现代购物网站靶场，覆盖 OWASP Top 10，适合作为 Web 综合项目。", safety: "优先使用官方演示或本地 Docker；本地实例保持隔离。" },
+  { id: "lab-dvwa", title: "DVWA", category: "Web 漏洞入门", stage: "web-vuln", nodeId: "sql-injection", level: "基础", pricing: "free", lang: "英文", deployment: "本地 · Docker / PHP", access: "开源项目", url: "https://github.com/digininja/DVWA", summary: "经典 PHP/MariaDB 漏洞应用，适合 SQL 注入、XSS、命令执行与文件上传的基础练习。", safety: "项目故意包含漏洞，绝不能部署到公网服务器。" },
+  { id: "lab-vulhub", title: "Vulhub", category: "CVE 与中间件", stage: "pentest", nodeId: "cms-framework", level: "进阶", pricing: "free", lang: "中文", deployment: "本地 · Docker Compose", access: "开源项目", url: "https://github.com/vulhub/vulhub", summary: "大量可复现的 Docker 漏洞环境，适合中间件、框架和公开 CVE 的本地验证。", safety: "启动前确认 Docker 网络隔离；实验结束执行清理并关闭容器。" },
+  { id: "lab-webgoat", title: "OWASP WebGoat", category: "Java Web 安全", stage: "web-vuln", nodeId: "web-basics", level: "基础", pricing: "free", lang: "英文", deployment: "本地 · Java / Docker", access: "开源项目", url: "https://owasp.org/www-project-webgoat/", summary: "以课程形式讲解漏洞原理、练习与修复，适合 Java、Tomcat 方向。", safety: "仅在本地实验系统运行，并保留快照以便回滚。" },
+  { id: "lab-tryhackme", title: "TryHackMe", category: "引导式综合学习", stage: "foundation", nodeId: "security-intro", level: "入门", pricing: "freemium", lang: "英文", deployment: "在线浏览器", access: "需注册", url: "https://tryhackme.com/beginner-path", summary: "从网络、Linux、Web 到防守的引导式房间，适合零基础建立练习节奏。", safety: "只使用平台房间和个人 VPN/AttackBox，不扫描外部目标。" },
+  { id: "lab-htb", title: "Hack The Box Academy", category: "进阶攻防路径", stage: "pentest", nodeId: "pentest-method", level: "进阶", pricing: "freemium", lang: "英文", deployment: "在线浏览器 / VPN", access: "需注册", url: "https://academy.hackthebox.com/", summary: "模块化学习与真实感靶机，适合掌握基础后的系统提升。", safety: "仅连接 HTB 明确分配的靶机与 VPN 网络。" },
+  { id: "lab-metasploitable", title: "Metasploitable 3", category: "网络与主机渗透", stage: "pentest", nodeId: "metasploit", level: "进阶", pricing: "free", lang: "英文", deployment: "本地 · 虚拟机", access: "开源项目", url: "https://github.com/rapid7/metasploitable3", summary: "Rapid7 提供的故意脆弱虚拟机，适合 Nmap、服务枚举和 Metasploit 练习。", safety: "使用 Host-only 或 NAT 网络，严禁桥接到真实办公网络。" },
+  { id: "lab-vulnhub", title: "VulnHub", category: "完整渗透与提权", stage: "pentest", nodeId: "privilege-escalation", level: "进阶", pricing: "free", lang: "英文", deployment: "本地 · 虚拟机", access: "下载靶机", url: "https://www.vulnhub.com/", summary: "可下载漏洞虚拟机集合，适合从信息收集到提权的完整流程练习。", safety: "导入未知靶机前创建独立网络与快照，不接入局域网。" },
+  { id: "lab-cyberdefenders", title: "CyberDefenders", category: "蓝队与应急响应", stage: "defense", nodeId: "incident-response", level: "进阶", pricing: "freemium", lang: "英文", deployment: "在线浏览器", access: "需注册", url: "https://cyberdefenders.org/blue-team-labs/", summary: "聚焦 DFIR、威胁狩猎、恶意软件和日志分析的蓝队实验。", safety: "仅分析平台提供的样本、日志和数据集，遵守平台规则。" },
+  { id: "lab-shepherd", title: "OWASP Security Shepherd", category: "Web / 移动安全", stage: "web-vuln", nodeId: "access-control", level: "进阶", pricing: "free", lang: "英文", deployment: "本地 · Docker / VM", access: "开源项目", url: "https://owasp.org/www-project-security-shepherd/", summary: "面向 Web 与移动应用安全的课程和挑战，适合继续扩展手工测试能力。", safety: "按官方文档部署在隔离主机中，不连接互联网暴露端口。" },
+];
+
 const PRACTICES = [
   { id: "p-env", title: "搭建隔离实验环境", stage: "foundation", nodeId: "virtual-lab", level: "基础", outcome: "Kali 虚拟机 + 本地靶场 + 可恢复快照", safety: "只使用 NAT/Host-only 网络，不连接陌生目标。" },
   { id: "p-packet", title: "抓包解释一次登录请求", stage: "foundation", nodeId: "network-model", level: "基础", outcome: "标注 DNS、TCP、HTTP、Cookie 与响应状态", safety: "只分析本机或授权实验流量。" },
@@ -240,4 +256,4 @@ const PRACTICES = [
   { id: "p-incident", title: "从日志还原事件时间线", stage: "defense", nodeId: "incident-response", level: "进阶", outcome: "输出发现、遏制、恢复和复盘清单", safety: "使用脱敏教学日志。" },
 ];
 
-window.SECUREPATH_DATA = { STAGES, NODES, TOOLS, RESOURCES, PRACTICES, SERIES_CATALOG, VIDEO_RESOURCES, DISCOVERY_RESOURCES };
+window.SECUREPATH_DATA = { STAGES, NODES, TOOLS, RESOURCES, LABS, PRACTICES, SERIES_CATALOG, VIDEO_RESOURCES, DISCOVERY_RESOURCES };
