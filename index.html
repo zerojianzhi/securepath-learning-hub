@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07131b" />
+    <title>SECUREPATH · 网络安全能力库</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app-shell"></div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <div id="resource-modal" class="modal-backdrop" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-header">
+          <div>
+            <span class="eyebrow">资源管理</span>
+            <h2 id="modal-title">新增资源</h2>
+          </div>
+          <button class="icon-button" data-action="close-modal" aria-label="关闭">×</button>
+        </div>
+        <form id="resource-form" class="form-grid">
+          <input type="hidden" id="resource-id" />
+          <label>
+            标题
+            <input id="resource-title" required placeholder="例如：Linux 命令行入门" />
+          </label>
+          <label>
+            平台
+            <select id="resource-platform">
+              <option>哔哩哔哩</option>
+              <option>抖音</option>
+              <option>小红书</option>
+              <option>官方文档</option>
+              <option>安全社区</option>
+              <option>在线靶场</option>
+              <option>个人资源</option>
+            </select>
+          </label>
+          <label>
+            所属阶段
+            <select id="resource-stage"></select>
+          </label>
+          <label>
+            资源类型
+            <select id="resource-type">
+              <option>视频</option>
+              <option>文档</option>
+              <option>图文</option>
+              <option>靶场</option>
+              <option>课程</option>
+              <option>书籍</option>
+            </select>
+          </label>
+          <label>
+            费用状态
+            <select id="resource-pricing">
+              <option value="free">免费</option>
+              <option value="freemium">部分免费</option>
+              <option value="trial">免费试用</option>
+              <option value="paid">收费</option>
+              <option value="subscription">订阅制</option>
+              <option value="license">需要许可证</option>
+              <option value="register">需要注册</option>
+              <option value="unknown">费用未知</option>
+            </select>
+          </label>
+          <label>
+            难度
+            <select id="resource-level">
+              <option>入门</option>
+              <option>基础</option>
+              <option>进阶</option>
+              <option>高级</option>
+            </select>
+          </label>
+          <label class="field-wide">
+            资源链接
+            <input id="resource-url" type="url" placeholder="https://" />
+          </label>
+          <label class="field-wide">
+            简介
+            <textarea id="resource-summary" rows="3" placeholder="说明它解决什么问题、适合什么时候学习"></textarea>
+          </label>
+          <div class="modal-actions field-wide">
+            <button type="button" class="button button-ghost" data-action="close-modal">取消</button>
+            <button type="submit" class="button button-primary">保存资源</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <input id="import-file" type="file" accept="application/json,.json" hidden />
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
