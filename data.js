@@ -122,51 +122,114 @@ const TOOLS = [
   { id: "sevenzip", name: "7-Zip", category: "系统工具", stage: "foundation", purpose: "解压 ISO、虚拟机包和工具压缩文件。", os: "Windows x64", type: "安装程序", pricing: "free", version: "Stable", url: "https://www.7-zip.org/download.html", docs: "https://www.7-zip.org/faq.html", install: "下载 x64 安装器；安装后右键菜单可解压镜像和工具包。", alternative: "Windows 内置压缩工具" },
 ];
 
-const RESOURCES = [
-  { id: "r-python", title: "Python 中文教程", platform: "官方文档", type: "文档", stage: "foundation", nodeId: "python-basics", level: "入门", pricing: "free", lang: "中文", duration: "按需", summary: "适合从语法、文件、异常和标准库开始建立脚本能力。", url: "https://docs.python.org/zh-cn/3/tutorial/", recommended: true },
-  { id: "r-linux", title: "Linux 教程与命令参考", platform: "菜鸟教程", type: "图文", stage: "foundation", nodeId: "linux-basics", level: "入门", pricing: "free", lang: "中文", duration: "按需", summary: "覆盖目录、权限、用户、服务、Shell 与常用命令。", url: "https://www.runoob.com/linux/linux-tutorial.html", recommended: true },
-  { id: "r-websec-notes", title: "Web 安全学习笔记", platform: "Read the Docs", type: "文档", stage: "web-vuln", nodeId: "web-request-flow", level: "基础", pricing: "free", lang: "中文", duration: "按需", summary: "按漏洞类型整理 Web 安全基础与进阶笔记。", url: "https://websec.readthedocs.io/zh/latest/", recommended: true },
-  { id: "r-heetian", title: "合天网安实验室", platform: "在线靶场", type: "靶场", stage: "pentest", nodeId: "capstone", level: "基础", pricing: "freemium", lang: "中文", duration: "按题", summary: "中文在线实验和靶场平台，适合把模块知识转成动手任务。", url: "https://www.heetian.com/", recommended: true },
-  { id: "r-yijing", title: "蚁景网安实验室", platform: "在线靶场", type: "靶场", stage: "web-vuln", nodeId: "sql-injection", level: "基础", pricing: "freemium", lang: "中文", duration: "按题", summary: "提供文件上传、Fastjson、无线安全等安全实验。", url: "https://www.yijinglab.com/", recommended: true },
-  { id: "r-portswigger", title: "Web Security Academy", platform: "PortSwigger", type: "靶场", stage: "web-vuln", nodeId: "burp-workflow", level: "基础", pricing: "free", lang: "英文", duration: "按题", summary: "免费互动 Web 安全课程与实验，适合 SQLi、XSS、认证等主题。", url: "https://portswigger.net/web-security", recommended: true },
-  { id: "r-bilibili-network", title: "网络安全基础与 Kali 入门合集", platform: "哔哩哔哩", type: "视频", stage: "foundation", nodeId: "virtual-lab", level: "入门", pricing: "free", lang: "中文", duration: "按合集", summary: "从环境搭建、Linux、网络到常用工具的中文视频入口。", url: "https://search.bilibili.com/all?keyword=%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%20Kali%20%E5%85%A5%E9%97%A8", recommended: true },
-  { id: "r-bilibili-web", title: "Web 漏洞与渗透测试视频检索", platform: "哔哩哔哩", type: "视频", stage: "web-vuln", nodeId: "sql-injection", level: "基础", pricing: "free", lang: "中文", duration: "按合集", summary: "按 SQL 注入、XSS、文件上传等关键词进入站内搜索。", url: "https://search.bilibili.com/all?keyword=Web%E6%B8%97%E9%80%8F%20SQL%E6%B3%A8%E5%85%A5%20XSS", recommended: false },
-  { id: "r-douyin", title: "抖音安全学习关键词入口", platform: "抖音", type: "视频", stage: "foundation", nodeId: "security-intro", level: "入门", pricing: "free", lang: "中文", duration: "按需", summary: "通过网络安全、Linux、Kali、Web 安全等关键词检索短视频。", url: "https://www.douyin.com/search/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8", recommended: false },
-  { id: "r-xhs", title: "小红书学习笔记关键词入口", platform: "小红书", type: "图文", stage: "foundation", nodeId: "linux-basics", level: "入门", pricing: "free", lang: "中文", duration: "按需", summary: "通过 Linux、Python、网络安全、面试整理等关键词检索笔记。", url: "https://www.xiaohongshu.com/search_result?keyword=%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8", recommended: false },
-  { id: "r-aliyun-security", title: "阿里云安全中心实践教程", platform: "阿里云", type: "文档", stage: "defense", nodeId: "security-devices", level: "进阶", pricing: "free", lang: "中文", duration: "按需", summary: "了解云上资产、配置核查、主动防御与安全运营闭环。", url: "https://help.aliyun.com/zh/security-center/use-cases/", recommended: false },
-  { id: "r-cisa-report", title: "漏洞报告与复现记录模板", platform: "个人资源", type: "文档", stage: "pentest", nodeId: "reporting", level: "基础", pricing: "free", lang: "中文", duration: "30 分钟", summary: "用于记录范围、复现步骤、影响、证据和修复建议。", url: "https://github.com/topics/security-report-template", recommended: true },
-  { id: "r-vuln-search", title: "网络安全视频与图文检索入口", platform: "多平台", type: "课程", stage: "pentest", nodeId: "capstone", level: "基础", pricing: "free", lang: "中文", duration: "按需", summary: "从多个中文平台按知识点检索课程、笔记与项目复盘。", url: "https://www.zhihu.com/search?type=content&q=%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95", recommended: false },
+// 直达视频资源：B站分P使用真实播放器分页数据核验；抖音作品保留登录/App限制。
+const VERIFIED_AT = "2026-07-29";
+const SERIES_CATALOG = [
+  { id: "s-sangfor", stage: "foundation", title: "深信服 2024 网络安全入门培训（54P）", platform: "哔哩哔哩", bvid: "BV1B2421N7Uu", creator: "网络安全基础入门", url: "https://www.bilibili.com/video/BV1B2421N7Uu/", summary: "官方入门课，覆盖安全概念、协议、操作系统、Web 与攻防。" },
+  { id: "s-network", stage: "foundation", title: "网络安全基础网络课程（35P）", platform: "哔哩哔哩", bvid: "BV1Zj411W7sC", creator: "渗透菜瓜", url: "https://www.bilibili.com/video/BV1Zj411W7sC/", summary: "网络设备、OSI/TCP-IP、IP、DNS、TCP、路由与防火墙。" },
+  { id: "s-woniu", stage: "foundation", title: "网络安全入门到精通完整体系（193P）", platform: "哔哩哔哩", bvid: "BV1SY411p7F9", creator: "蜗牛学苑", url: "https://www.bilibili.com/video/BV1SY411p7F9/", summary: "Windows、Linux、协议、域、设备、数据库和安全运维。" },
+  { id: "s-web-burp", stage: "web-vuln", title: "Burp Suite 渗透测试实战（99P）", platform: "哔哩哔哩", bvid: "BV1WGp7eMEfR", creator: "网络安全七侠", url: "https://www.bilibili.com/video/BV1WGp7eMEfR/", summary: "从 HTTP、Burp 到 SQLi、XSS、上传、CSRF、RCE、SSRF。" },
+  { id: "s-sqli", stage: "web-vuln", title: "SQL 注入漏洞攻防（100P）", platform: "哔哩哔哩", bvid: "BV1TZ421Y7XC", creator: "八方网域", url: "https://www.bilibili.com/video/BV1TZ421Y7XC/", summary: "SQL 注入原理、类型、SQLMap、XSS 与防御。" },
+  { id: "s-web-route", stage: "web-vuln", title: "零基础 Web 渗透路线（100P）", platform: "哔哩哔哩", bvid: "BV1sC4y127fv", creator: "白帽小黑客", url: "https://www.bilibili.com/video/BV1sC4y127fv/", summary: "HTTP、信息收集、Burp、SQLMap、WebLogic、Fastjson、Redis。" },
+  { id: "s-pentest", stage: "pentest", title: "网络安全 300 集：Web/渗透/代码审计（281P）", platform: "哔哩哔哩", bvid: "BV1Lf4y1t7Mc", creator: "网络安全_", url: "https://www.bilibili.com/video/BV1Lf4y1t7Mc/", summary: "覆盖网络基础、Web 漏洞、Linux、代码审计、提权和报告。" },
+  { id: "s-pentest-route", stage: "pentest", title: "零基础全套渗透测试路线（100P）", platform: "哔哩哔哩", bvid: "BV1sC4y127fv", creator: "白帽小黑客", url: "https://www.bilibili.com/video/BV1sC4y127fv/", summary: "从环境准备、信息收集、工具到内网和提权。" },
+  { id: "s-redteam", stage: "pentest", title: "网络安全全套进阶课程（87P）", platform: "哔哩哔哩", bvid: "BV1bwPFejEei", creator: "蚁景网络安全教学", url: "https://www.bilibili.com/video/BV1bwPFejEei/", summary: "Kali、Docker、信息收集、MSF、Cobalt Strike 与内网。" },
+  { id: "s-emergency", stage: "defense", title: "网络安全应急响应精讲（7P）", platform: "哔哩哔哩", bvid: "BV11VGXzBE6d", creator: "黑客小野猫", url: "https://www.bilibili.com/video/BV11VGXzBE6d/", summary: "应急响应理论、流程和实操，适合蓝队复盘。" },
+  { id: "s-domain", stage: "defense", title: "Windows 域与安全设备课程（193P）", platform: "哔哩哔哩", bvid: "BV1SY411p7F9", creator: "蜗牛学苑", url: "https://www.bilibili.com/video/BV1SY411p7F9/", summary: "AD 域、组策略、Windows/Linux、设备、日志与数据库安全。" },
+  { id: "s-internal", stage: "defense", title: "内网、提权与横向移动课程（87P）", platform: "哔哩哔哩", bvid: "BV1bwPFejEei", creator: "蚁景网络安全教学", url: "https://www.bilibili.com/video/BV1bwPFejEei/", summary: "域环境、凭据、PowerShell、提权、横向和协作工具。" },
+  { id: "s-docker", stage: "pentest", title: "Docker 容器入门到进阶（54P）", platform: "哔哩哔哩", bvid: "BV1Ab4y1h7hG", creator: "乐字节-程序猿有点呆", url: "https://www.bilibili.com/video/BV1Ab4y1h7hG/", summary: "容器、镜像、网络、挂载、Dockerfile 与 Redis 集群。" },
+  { id: "s-mobile", stage: "defense", title: "移动安全新手教程（10P）", platform: "哔哩哔哩", bvid: "BV1at4y1W7Rw", creator: "网络安全移动安全", url: "https://www.bilibili.com/video/BV1at4y1W7Rw/", summary: "移动端安全扩展方向，需结合个人设备和授权环境。" },
 ];
 
-// 为路线图中尚未配置直链的节点补充中文平台检索入口，确保每个节点都有可开始的资源。
-const searchPlatforms = [
-  { name: "哔哩哔哩", type: "视频", base: "https://search.bilibili.com/all?keyword=" },
-  { name: "抖音", type: "视频", base: "https://www.douyin.com/search/" },
-  { name: "小红书", type: "图文", base: "https://www.xiaohongshu.com/search_result?keyword=" },
-  { name: "知乎", type: "图文", base: "https://www.zhihu.com/search?type=content&q=" },
-  { name: "CSDN", type: "图文", base: "https://so.csdn.net/so/search?q=" },
+const BILI_META = {
+  "BV1B2421N7Uu": { creator: "网络安全基础入门", publishedAt: "2024-03-15" },
+  "BV1WGp7eMEfR": { creator: "网络安全七侠", publishedAt: "2024-09-09" },
+  "BV1TZ421Y7XC": { creator: "八方网域", publishedAt: "2024-03-08" },
+  "BV1xh1TB5E2K": { creator: "哔哩网络安全官方账号", publishedAt: "2025-10-31" },
+  "BV1Lf4y1t7Mc": { creator: "网络安全_", publishedAt: "2021-03-22" },
+  "BV1sC4y127fv": { creator: "白帽小黑客", publishedAt: "2023-11-28" },
+  "BV1CN4y1Y72m": { creator: "一只小黑帽er", publishedAt: "2023-12-04" },
+  "BV1Zj411W7sC": { creator: "渗透菜瓜", publishedAt: "2023-12-11" },
+  "BV1SY411p7F9": { creator: "蜗牛学苑", publishedAt: "2021-12-09" },
+  "BV1bwPFejEei": { creator: "蚁景网络安全教学", publishedAt: "2025-02-21" },
+  "BV11VGXzBE6d": { creator: "黑客小野猫", publishedAt: "2025-04-30" },
+  "BV1Ab4y1h7hG": { creator: "乐字节-程序猿有点呆", publishedAt: "2021-10-16" },
+  "BV1at4y1W7Rw": { creator: "网络安全移动安全", publishedAt: "2022-05-17" },
+  "BV1x5411R7EE": { creator: "数据潜水员", publishedAt: "2022-05-20" },
+};
+
+const B = (id, nodeId, bvid, page, title, duration, level = "基础", summary = "对应路线节点的具体中文视频分P。") => {
+  const meta = BILI_META[bvid] || { creator: "哔哩哔哩 UP 主", publishedAt: "" };
+  const seriesUrl = `https://www.bilibili.com/video/${bvid}/`;
+  const directUrl = `${seriesUrl}?p=${page}`;
+  return { id, title, creator: meta.creator, platform: "哔哩哔哩", type: "视频", stage: nodeByIdForData(nodeId)?.stage || "foundation", nodeId, level, pricing: "free", lang: "中文", duration, episodeLabel: `第 ${page} P`, summary, url: directUrl, directUrl, seriesUrl, publishedAt: meta.publishedAt, verifiedAt: VERIFIED_AT, accessMode: "网页可播", requiresLogin: false, availability: "available", recommended: true, searchEntry: false };
+};
+const D = (id, nodeId, directUrl, title, creator, duration, publishedAt, level = "基础", summary = "抖音精选具体作品，可能需要登录或使用 App。") => ({ id, title, creator, platform: "抖音", type: "视频", stage: nodeByIdForData(nodeId)?.stage || "foundation", nodeId, level, pricing: "free", lang: "中文", duration, episodeLabel: "具体作品", summary, url: directUrl, directUrl, seriesUrl: "", publishedAt, verifiedAt: VERIFIED_AT, accessMode: "需登录", requiresLogin: true, availability: "available", recommended: false, searchEntry: false });
+const nodeByIdForData = (id) => NODES.find((node) => node.id === id);
+
+// 每个能力节点 3 条视频：前两条为核心直达分P，第三条为实操/复习或跨平台补充。
+const VIDEO_RESOURCES = [
+  B("v-computer-1", "computer-basics", "BV1x5411R7EE", 2, "计算机硬件与组成（1）", "21:51", "入门", "从硬件、系统和资源职责建立计算机底层认知。"), B("v-computer-2", "computer-basics", "BV1SY411p7F9", 21, "计算机网络概述", "72:37", "入门", "把计算机组成与网络通信放在同一张基础图中理解。"), D("v-computer-3", "computer-basics", "https://jingxuan.douyin.com/m/video/7648119562176695587", "普林斯顿计算机公开课：从硬件到通信", "玉米读书", "03:12", "2026-06-06", "入门", "短视频补充计算机硬件、软件和通信的整体视角。"),
+  B("v-security-1", "security-intro", "BV1B2421N7Uu", 1, "信息安全：安全挑战与现状", "12:48", "入门", "认识资产、威胁、漏洞、风险及安全行业背景。"), B("v-security-2", "security-intro", "BV1B2421N7Uu", 2, "信息安全：安全概念及常见术语", "18:38", "入门", "建立后续学习统一的安全术语表。"), D("v-security-3", "security-intro", "https://jingxuan.douyin.com/m/video/7618795540100222249", "SRC 平台是什么：从 0 选择合规平台", "360智榜样网络安全（官方）", "03:23", "2026-03-19", "入门", "用平台选择和授权范围理解合法学习边界。"),
+  B("v-network-1", "network-model", "BV1CN4y1Y72m", 4, "OSI 七层与 TCP/IP 五层模型", "48:58", "基础", "理解分层、封装与各层协议职责。"), B("v-network-2", "network-model", "BV1Zj411W7sC", 14, "TCP 三次握手", "40:32", "基础", "把抽象分层落到真实连接过程。"), B("v-network-3", "network-model", "BV1SY411p7F9", 74, "ARP 协议与抓包观察", "72:18", "进阶", "用抓包验证 DNS、TCP 和 HTTP 的分层证据。"),
+  B("v-ip-1", "ip-subnet", "BV1Lf4y1t7Mc", 8, "IP 地址详解", "62:33", "基础", "掌握 IPv4 表示、分类和网络边界。"), B("v-ip-2", "ip-subnet", "BV1SY411p7F9", 28, "子网掩码", "35:16", "基础", "理解子网划分和隔离靶场地址规划。"), D("v-ip-3", "ip-subnet", "https://jingxuan.douyin.com/m/video/7484624956857306428", "电脑如何获取 IP：DHCP 协议详解", "网络工程师-波哥", "04:44", "2025-03-22", "基础", "补充 DHCP 分配地址、网关和 DNS 的完整过程。"),
+  B("v-dns-1", "dns-http", "BV1Zj411W7sC", 8, "DNS 的定义和由来", "33:29", "基础", "理解域名、递归查询和解析结果。"), B("v-dns-2", "dns-http", "BV1SY411p7F9", 92, "HTTP 协议", "58:34", "基础", "从请求方法、头部和响应状态进入 Web。"), D("v-dns-3", "dns-http", "https://jingxuan.douyin.com/m/video/7542761848400137507", "在浏览器输入 URL 后发生了什么", "技术蛋老师", "未标注", "2025-08-26", "基础", "短视频串起 DNS、TCP、TLS、HTTP 和页面渲染。"),
+  B("v-windows-1", "windows-basics", "BV1SY411p7F9", 11, "Windows 用户管理", "52:06", "基础", "创建用户并理解账户边界。"), B("v-windows-2", "windows-basics", "BV1SY411p7F9", 13, "NTFS 文件权限", "42:47", "基础", "掌握 ACL、继承和最小权限。"), B("v-windows-3", "windows-basics", "BV1SY411p7F9", 19, "Windows 注册表基础", "45:42", "进阶", "把进程、服务、注册表和审计线索联系起来。"),
+  B("v-linux-1", "linux-basics", "BV1SY411p7F9", 124, "Linux 操作系统概述", "53:04", "基础", "了解内核、用户空间和发行版结构。"), B("v-linux-2", "linux-basics", "BV1SY411p7F9", 127, "Linux 文件系统", "52:47", "基础", "掌握目录、文件、挂载和权限入口。"), D("v-linux-3", "linux-basics", "https://jingxuan.douyin.com/m/video/7613641405314960667", "Linux 内核与用户空间的边界", "01熵", "18:00", "2026-03-05", "进阶", "从进程树和特权模式理解 Linux 安全边界。"),
+  B("v-shell-1", "shell-scripting", "BV1SY411p7F9", 141, "Shell 环境与变量", "66:07", "基础", "掌握 Shell 变量、环境和命令组合。"), B("v-shell-2", "shell-scripting", "BV1SY411p7F9", 142, "Shell 脚本基础应用", "63:54", "基础", "用脚本完成本地批处理和日志筛选。"), B("v-shell-3", "shell-scripting", "BV1SY411p7F9", 147, "awk 与 sed 字符串处理", "66:50", "进阶", "把文本处理能力迁移到安全日志分析。"),
+  B("v-python-1", "python-basics", "BV1Lf4y1t7Mc", 239, "Python 安装与使用", "31:29", "入门", "配置解释器和脚本运行环境。"), B("v-python-2", "python-basics", "BV1Lf4y1t7Mc", 240, "Python 输出", "29:54", "基础", "从输入输出和数据类型开始写安全小脚本。"), B("v-python-3", "python-basics", "BV1Lf4y1t7Mc", 241, "Python 输入", "22:29", "基础", "读取用户输入并练习校验与异常处理。"),
+  B("v-webbasics-1", "web-basics", "BV1Lf4y1t7Mc", 260, "HTML 表单", "64:35", "基础", "理解表单输入、DOM 和浏览器提交。"), B("v-webbasics-2", "web-basics", "BV1Lf4y1t7Mc", 261, "HTML 与 CSS", "47:47", "基础", "认识页面结构、样式和前端边界。"), B("v-webbasics-3", "web-basics", "BV1Lf4y1t7Mc", 281, "HTML 常用标签", "57:06", "基础", "复习常见标签并观察 Network 请求。"),
+  B("v-phpjava-1", "php-java-overview", "BV1Lf4y1t7Mc", 263, "PHP 基础与变量", "87:08", "基础", "从服务端语言理解请求处理。"), B("v-phpjava-2", "php-java-overview", "BV1Lf4y1t7Mc", 272, "PHP 与 MySQL 连接", "48:08", "基础", "看清应用、数据库和权限的协作关系。"), B("v-phpjava-3", "php-java-overview", "BV1SY411p7F9", 180, "Tomcat 配置应用", "58:35", "进阶", "补充 Java Web 容器在架构中的位置。"),
+  B("v-sql-1", "sql-database", "BV1WGp7eMEfR", 69, "MySQL 基础", "57:55", "基础", "表、查询、权限与应用数据流入门。"), B("v-sql-2", "sql-database", "BV1sC4y127fv", 92, "数据库基础", "11:36", "基础", "用短课复习数据库对象和连接。"), B("v-sql-3", "sql-database", "BV1SY411p7F9", 168, "MySQL 补充知识", "70:22", "进阶", "补充生产数据库常见结构与安全注意点。"),
+  B("v-lab-1", "virtual-lab", "BV1CN4y1Y72m", 20, "Kali 2023 系统安装", "20:38", "基础", "在虚拟机中安装 Kali 并保持网络隔离。"), B("v-lab-2", "virtual-lab", "BV1CN4y1Y72m", 21, "Kali 快照与实验说明", "02:50", "基础", "建立快照、回滚和靶场安全规则。"), B("v-lab-3", "virtual-lab", "BV1CN4y1Y72m", 22, "BWAPP 靶场搭建", "38:38", "基础", "启动本地 Web 靶场，不连接陌生目标。"),
+  B("v-devices-1", "security-devices", "BV1Lf4y1t7Mc", 102, "防火墙基础", "40:39", "选学", "理解防火墙的检测、阻断和策略边界。"), B("v-devices-2", "security-devices", "BV1SY411p7F9", 121, "网络安全设备一", "54:56", "选学", "认识企业安全设备的部署位置。"), B("v-devices-3", "security-devices", "BV1SY411p7F9", 122, "网络安全设备二", "58:14", "选学", "从设备联动理解安全运营闭环。"),
+  B("v-flow-1", "web-request-flow", "BV1WGp7eMEfR", 6, "网站运行原理", "12:01", "基础", "从浏览器到服务端拆解请求链路。"), B("v-flow-2", "web-request-flow", "BV1WGp7eMEfR", 7, "HTTP 协议介绍", "12:01", "基础", "理解请求行、请求头、正文与响应。"), B("v-flow-3", "web-request-flow", "BV1SY411p7F9", 93, "分析 HTTP 报文", "22:17", "进阶", "将请求链路落到抓包字段。"),
+  B("v-recon-1", "recon-directory", "BV1sC4y127fv", 9, "域名信息收集", "48:22", "基础", "在授权范围内建立被动资产清单。"), B("v-recon-2", "recon-directory", "BV1sC4y127fv", 10, "IP 与端口信息收集", "60:16", "基础", "识别主机、端口并记录边界。"), B("v-recon-3", "recon-directory", "BV1bwPFejEei", 12, "子域名收集", "32:11", "进阶", "用公开信息补充资产地图，不越权探测。"),
+  B("v-sqli-1", "sql-injection", "BV1TZ421Y7XC", 2, "SQL 注入基础：什么是 SQL 注入", "19:59", "进阶", "理解拼接 SQL、参数和漏洞成因。"), B("v-sqli-2", "sql-injection", "BV1TZ421Y7XC", 9, "SQL 注入演示", "20:00", "进阶", "在教学靶场观察注入输入如何影响查询。"), D("v-sqli-3", "sql-injection", "https://jingxuan.douyin.com/m/video/7565828487072845062", "SQL 注入案例全流程", "网安学习室", "34:17", "2025-10-27", "进阶", "抖音具体案例视频；仅在授权靶场复现。"),
+  B("v-xss-1", "xss", "BV1TZ421Y7XC", 51, "XSS 跨站脚本攻击篇", "12:55", "进阶", "认识 XSS 的输入、输出和执行边界。"), B("v-xss-2", "xss", "BV1TZ421Y7XC", 55, "反射型与存储型 XSS", "19:59", "进阶", "对比不同 XSS 类型与影响。"), B("v-xss-3", "xss", "BV1sC4y127fv", 60, "存储型 XSS 原理", "14:19", "进阶", "在本地靶场分析存储型输入与防护。"),
+  B("v-csrf-1", "csrf", "BV1WGp7eMEfR", 84, "CSRF 防御", "59:00", "进阶", "理解 Token、SameSite 和鉴权边界。"), B("v-csrf-2", "csrf", "BV1WGp7eMEfR", 85, "CSRF 实战", "69:46", "进阶", "在授权靶场验证状态变更请求。"), B("v-csrf-3", "csrf", "BV1Lf4y1t7Mc", 215, "CSRF", "67:28", "进阶", "用另一套课程复习 CSRF 防护思路。"),
+  B("v-upload-1", "upload", "BV1WGp7eMEfR", 49, "文件上传漏洞", "02:44", "进阶", "理解上传入口、类型校验和存储风险。"), B("v-upload-2", "upload", "BV1WGp7eMEfR", 54, "文件上传防御", "03:57", "进阶", "从白名单、隔离和不可执行目录进行修复。"), B("v-upload-3", "upload", "BV1TZ421Y7XC", 89, "文件上传漏洞篇", "19:59", "进阶", "用 SQL 系列的 Web 漏洞章节补充上传基础。"),
+  B("v-path-1", "path-traversal", "BV1WGp7eMEfR", 79, "文件包含", "85:37", "进阶", "理解路径拼接与包含入口。"), B("v-path-2", "path-traversal", "BV1WGp7eMEfR", 80, "文件包含漏洞", "61:22", "进阶", "练习规范化、白名单和最小权限修复。"), B("v-path-3", "path-traversal", "BV1Lf4y1t7Mc", 213, "文件包含", "64:19", "进阶", "从另一套课程复盘路径遍历风险。"),
+  B("v-rce-1", "rce", "BV1WGp7eMEfR", 35, "命令执行漏洞详解", "05:24", "高级", "从不可信输入到系统命令的风险链。"), B("v-rce-2", "rce", "BV1WGp7eMEfR", 81, "命令执行简介与函数", "90:31", "高级", "在隔离靶场理解命令执行入口。"), B("v-rce-3", "rce", "BV1WGp7eMEfR", 82, "命令执行利用与防御", "102:45", "高级", "以修复为目标复核命令执行防护。"),
+  B("v-ssrf-1", "ssrf", "BV1WGp7eMEfR", 95, "SSRF 简介", "105:16", "高级", "理解服务端代发请求和出站边界。"), B("v-ssrf-2", "ssrf", "BV1WGp7eMEfR", 96, "SSRF 利用与修改", "95:20", "高级", "在隔离环境观察请求方向和访问控制。"), B("v-ssrf-3", "ssrf", "BV1sC4y127fv", 89, "SSRF 漏洞利用", "19:41", "高级", "用第二套课程复习白名单和网络隔离。"),
+  B("v-webshell-1", "webshell", "BV1WGp7eMEfR", 50, "WebShell 分类", "04:10", "高级", "从防守角度识别可疑脚本和落地风险。"), B("v-webshell-2", "webshell", "BV1WGp7eMEfR", 53, "WebShell 管理工具风险", "07:35", "高级", "理解文件完整性、检测与响应线索。"), B("v-webshell-3", "webshell", "BV1Lf4y1t7Mc", 207, "WebShell 介绍", "32:01", "高级", "建立 WebShell 检测和清理笔记。"),
+  B("v-deser-1", "deserialization", "BV1sC4y127fv", 19, "Fastjson 反序列化", "21:12", "高级", "理解对象序列化和类型边界。"), B("v-deser-2", "deserialization", "BV1sC4y127fv", 20, "Shiro 反序列化", "49:34", "高级", "从 Java 技术栈观察反序列化前置条件。"), B("v-deser-3", "deserialization", "BV1Lf4y1t7Mc", 223, "反序列化漏洞", "71:06", "高级", "用代码审计角度总结安全反序列化。"),
+  B("v-access-1", "access-control", "BV1WGp7eMEfR", 9, "短信验证码逻辑漏洞", "12:01", "进阶", "理解认证流程和业务逻辑边界。"), B("v-access-2", "access-control", "BV1WGp7eMEfR", 87, "逻辑漏洞简介", "52:18", "进阶", "区分认证、授权和业务流程问题。"), B("v-access-3", "access-control", "BV1WGp7eMEfR", 88, "逻辑漏洞讲解", "61:13", "进阶", "用测试矩阵复核水平/垂直权限。"),
+  B("v-cms-1", "cms-framework", "BV1sC4y127fv", 73, "米拓 CMS 框架实战", "08:05", "进阶", "从版本识别和补丁验证理解中间件风险。"), B("v-cms-2", "cms-framework", "BV1sC4y127fv", 74, "易忧 CMS 框架实战", "02:07", "进阶", "认识框架版本、公告和本地验证边界。"), B("v-cms-3", "cms-framework", "BV1sC4y127fv", 75, "yzmCMS 框架实战上", "04:17", "进阶", "以授权 CMS 靶场建立版本风险清单。"),
+  B("v-method-1", "pentest-method", "BV1CN4y1Y72m", 29, "渗透测试工作的授权说明", "13:20", "基础", "明确目标、授权书、停止条件和范围。"), B("v-method-2", "pentest-method", "BV1sC4y127fv", 8, "渗透测试工具环境准备", "52:23", "基础", "把环境准备放在正式测试之前。"), D("v-method-3", "pentest-method", "https://jingxuan.douyin.com/m/video/7645613848333962505", "零基础学挖漏洞的 5 个阶段", "网络安全黑卡", "05:27", "2026-05-30", "基础", "用短视频复习阶段依赖，但实操只在授权环境。"),
+  B("v-burp-1", "burp-workflow", "BV1xh1TB5E2K", 2, "Burp 基本介绍", "07:39", "进阶", "认识代理、目标和请求编辑。"), B("v-burp-2", "burp-workflow", "BV1xh1TB5E2K", 7, "Burp 基本配置", "12:52", "进阶", "配置浏览器代理、证书和范围。"), B("v-burp-3", "burp-workflow", "BV1sC4y127fv", 13, "BurpSuite 工具介绍", "56:45", "进阶", "用另一套中文课程完成工作流复习。"),
+  B("v-nmap-1", "nmap-workflow", "BV1CN4y1Y72m", 30, "Nmap 主机发现", "22:43", "进阶", "只对本机或靶场识别存活主机。"), B("v-nmap-2", "nmap-workflow", "BV1CN4y1Y72m", 31, "Nmap 端口扫描", "24:36", "进阶", "把端口结果转成服务验证计划。"), B("v-nmap-3", "nmap-workflow", "BV1CN4y1Y72m", 32, "Nmap 版本与漏洞扫描", "15:20", "高级", "理解扫描边界和人工复核。"),
+  B("v-wire-1", "wireshark-workflow", "BV1SY411p7F9", 72, "Wireshark 捕获过滤器", "77:45", "进阶", "用过滤器缩小协议分析范围。"), B("v-wire-2", "wireshark-workflow", "BV1SY411p7F9", 73, "Wireshark 显示过滤器", "36:36", "进阶", "从字段和流跟踪定位请求。"), B("v-wire-3", "wireshark-workflow", "BV1CN4y1Y72m", 5, "端口与 Wireshark 抓包", "10:44", "进阶", "用短课复习端口和分层数据。"),
+  B("v-sqlmap-1", "sqlmap-workflow", "BV1TZ421Y7XC", 37, "SQLMap 工具篇 01", "20:01", "高级", "理解自动化注入的适用范围。"), B("v-sqlmap-2", "sqlmap-workflow", "BV1TZ421Y7XC", 38, "SQLMap 工具篇 02", "20:00", "高级", "把工具输出与手工证据互相验证。"), B("v-sqlmap-3", "sqlmap-workflow", "BV1WGp7eMEfR", 45, "SQLMap 检测漏洞", "07:04", "高级", "在 DVWA 等本地靶场复核结果。"),
+  B("v-msf-1", "metasploit", "BV1sC4y127fv", 24, "Metasploit 渗透基础", "45:20", "高级", "理解模块、Payload、Session 和清理。"), B("v-msf-2", "metasploit", "BV1sC4y127fv", 25, "Metasploit 攻击 Windows/Linux 实战", "74:38", "高级", "只在可回滚靶机中验证模块。"), B("v-msf-3", "metasploit", "BV1bwPFejEei", 19, "Metasploit 目录结构", "16:59", "高级", "从框架结构复习模块选择。"),
+  B("v-audit-1", "code-audit", "BV1sC4y127fv", 71, "代码审计前后端关系", "03:10", "高级", "从输入、处理、输出建立审计视角。"), B("v-audit-2", "code-audit", "BV1Lf4y1t7Mc", 211, "文件上传代码审计", "59:21", "高级", "将代码问题映射到请求和修复方案。"), B("v-audit-3", "code-audit", "BV1Lf4y1t7Mc", 204, "PHP 代码注入", "62:01", "高级", "在教学代码中标记危险数据流。"),
+  B("v-middleware-1", "middleware-security", "BV1sC4y127fv", 15, "WebLogic 漏洞", "26:34", "高级", "阅读公告、版本和补丁影响。"), B("v-middleware-2", "middleware-security", "BV1sC4y127fv", 16, "ThinkPHP5 技术栈漏洞", "17:06", "高级", "理解框架边界和版本风险。"), B("v-middleware-3", "middleware-security", "BV1SY411p7F9", 181, "Tomcat 下配置 HTTPS", "63:40", "高级", "用本地环境识别 Java 容器配置。"),
+  B("v-docker-1", "docker-security", "BV1Ab4y1h7hG", 3, "容器与虚拟机比较", "02:42", "进阶", "理解隔离边界和常见误区。"), B("v-docker-2", "docker-security", "BV1Ab4y1h7hG", 21, "Docker 目录挂载", "09:01", "进阶", "从挂载、权限和数据面理解容器风险。"), B("v-docker-3", "docker-security", "BV1SY411p7F9", 155, "Docker 基础命令与应用", "61:18", "进阶", "把安全基线落到镜像、容器和网络。"),
+  B("v-redis-1", "redis-db-security", "BV1sC4y127fv", 21, "Redis 未授权漏洞", "55:41", "进阶", "理解默认配置、认证和网络暴露。"), B("v-redis-2", "redis-db-security", "BV1SY411p7F9", 170, "Redis 配置与使用", "61:07", "进阶", "从服务配置和访问控制进行加固。"), B("v-redis-3", "redis-db-security", "BV1Ab4y1h7hG", 46, "搭建 Redis 集群环境准备", "05:44", "进阶", "在本地容器中观察 Redis 网络边界。"),
+  B("v-report-1", "reporting", "BV1TZ421Y7XC", 97, "渗透测试报告编写", "19:59", "基础", "将范围、复现、证据、评级和修复写清楚。"), B("v-report-2", "reporting", "BV1sC4y127fv", 1, "网络安全系统学习路线与安全法", "09:39", "基础", "报告先写清授权与排除项。"), D("v-report-3", "reporting", "https://jingxuan.douyin.com/m/video/7592551985212149027", "漏洞挖掘学习路径", "网安学习室", "00:29", "2026-01-07", "基础", "从案例抽取证据、影响和修复建议。"),
+  B("v-capstone-1", "capstone", "BV1sC4y127fv", 77, "认识 CTF", "06:43", "进阶", "建立靶场、CTF 和授权项目的练习边界。"), B("v-capstone-2", "capstone", "BV1sC4y127fv", 85, "DVWA 靶场搭建", "08:50", "进阶", "完成可回滚的综合 Web 实验。"), B("v-capstone-3", "capstone", "BV1WGp7eMEfR", 34, "DVWA 漏洞靶场搭建", "10:31", "进阶", "用第二套课程复盘环境和证据链。"),
+  B("v-ad-1", "ad-basics", "BV1SY411p7F9", 99, "AD 域部署 Windows 域", "66:43", "高级", "在本地域实验中理解域、对象和认证边界。"), B("v-ad-2", "ad-basics", "BV1SY411p7F9", 100, "AD 域对象管理", "40:26", "高级", "掌握用户、组和计算机对象。"), B("v-ad-3", "ad-basics", "BV1SY411p7F9", 101, "AD 组策略应用", "45:26", "高级", "把策略和最小权限联系起来。"),
+  B("v-ps-1", "powershell", "BV1SY411p7F9", 154, "Windows 配套命令", "45:03", "进阶", "用命令查询本机系统和安全配置。"), B("v-ps-2", "powershell", "BV1bwPFejEei", 61, "PowerShell 获取 RDP 连接记录", "21:01", "进阶", "在本机审计场景中读取日志线索。"), B("v-ps-3", "powershell", "BV1Lf4y1t7Mc", 167, "日志管理与应急分析", "18:45", "进阶", "把 PowerShell 输出用于事件时间线。"),
+  B("v-kerb-1", "kerberos-ntlm", "BV1bwPFejEei", 47, "本地账号与域账号定位", "10:10", "高级", "用域部署视频建立 Kerberos/NTLM 前置知识。"), B("v-kerb-2", "kerberos-ntlm", "BV1bwPFejEei", 59, "Windows Hash 简介", "22:49", "高级", "从凭据材料理解域认证防守线索。"), B("v-kerb-3", "kerberos-ntlm", "BV1bwPFejEei", 57, "域内信息收集", "35:55", "高级", "只在实验域观察认证和权限关系。"),
+  B("v-exchange-1", "exchange-security", "BV1SY411p7F9", 97, "邮件协议与邮件系统", "52:29", "选学", "了解企业邮件服务暴露面。"), B("v-exchange-2", "exchange-security", "BV1SY411p7F9", 98, "邮件流量分析", "74:16", "选学", "从流量和补丁管理角度分析 Exchange 类服务。"), B("v-exchange-3", "exchange-security", "BV1B2421N7Uu", 44, "接入认证技术", "14:21", "选学", "补充企业服务认证边界。"),
+  B("v-privesc-1", "privilege-escalation", "BV1sC4y127fv", 39, "Windows 提权信息收集", "145:38", "高级", "只在本地靶场枚举错误配置并复盘加固。"), B("v-privesc-2", "privilege-escalation", "BV1sC4y127fv", 41, "Linux 提权", "242:36", "高级", "理解 Linux 权限、SUID 和服务风险。"), B("v-privesc-3", "privilege-escalation", "BV1bwPFejEei", 80, "Linux 内核漏洞提权", "59:58", "高级", "从防守视角识别内核与配置风险。"),
+  B("v-lateral-1", "lateral-movement", "BV1bwPFejEei", 52, "内网机器 IP 配置与域环境调试", "19:54", "高级", "在虚拟实验网络绘制横向风险路径。"), B("v-lateral-2", "lateral-movement", "BV1sC4y127fv", 43, "内置工具横向移动", "99:23", "高级", "理解网络分区、凭据保护和检测点。"), B("v-lateral-3", "lateral-movement", "BV1bwPFejEei", 87, "内置工具横向移动", "82:02", "高级", "以蓝队视角复核横向行为与阻断。"),
+  B("v-ir-1", "incident-response", "BV11VGXzBE6d", 1, "应急响应篇：上", "85:56", "进阶", "掌握发现、遏制、恢复和复盘的总流程。"), B("v-ir-2", "incident-response", "BV11VGXzBE6d", 4, "应急响应实操上", "106:31", "进阶", "用教学事件练习证据和时间线。"), B("v-ir-3", "incident-response", "BV11VGXzBE6d", 7, "应急响应实操续", "61:06", "进阶", "完成一份脱敏事件响应清单。"),
+  B("v-cobalt-1", "cobalt-strike-awareness", "BV1bwPFejEei", 23, "Cobalt Strike 简介", "10:03", "高级", "从蓝队角度认识协作工具和检测线索。"), B("v-cobalt-2", "cobalt-strike-awareness", "BV1bwPFejEei", 24, "MSF 攻击 Windows 实例", "40:02", "高级", "只在授权演示环境分析行为链。"), B("v-cobalt-3", "cobalt-strike-awareness", "BV1bwPFejEei", 25, "Cobalt Strike 常用功能", "21:28", "高级", "记录审计点、网络特征和防御措施。"),
+  B("v-mobile-1", "mobile-wireless", "BV1at4y1W7Rw", 1, "移动安全教程：第一集", "27:19", "选学", "了解移动端安全学习范围和测试授权。"), B("v-mobile-2", "mobile-wireless", "BV1at4y1W7Rw", 2, "移动安全教程：第二集", "33:03", "选学", "建立移动应用、设备和网络实验边界。"), D("v-mobile-3", "mobile-wireless", "https://www.douyin.com/video/7622699267018312987", "移动端安全科普", "抖音精选", "未标注", "2026-01-01", "选学", "抖音具体作品，需登录/App；仅使用个人设备练习。"),
 ];
-const configuredNodeIds = new Set(RESOURCES.map((resource) => resource.nodeId));
-NODES.filter((node) => !configuredNodeIds.has(node.id)).forEach((node, index) => {
-  const platform = searchPlatforms[index % searchPlatforms.length];
-  const keyword = `${node.title} 网络安全`;
-  RESOURCES.push({
-    id: `search-${node.id}`,
-    title: `${node.title} · 中文学习入口`,
-    platform: platform.name,
-    type: platform.type,
-    stage: node.stage,
-    nodeId: node.id,
-    level: node.level,
-    pricing: "free",
-    lang: "中文",
-    duration: "按需",
-    summary: `通过${platform.name}检索“${keyword}”，先完成知识目标，再回到节点练习。`,
-    url: `${platform.base}${encodeURIComponent(keyword)}`,
-    recommended: node.track === "core",
-    searchEntry: true,
-  });
-});
+
+// 搜索页只保留在“继续查找”区，不计入正式视频数量。
+const DISCOVERY_RESOURCES = [
+  { id: "d-bilibili", title: "哔哩哔哩：继续查找中文课程", platform: "哔哩哔哩", type: "检索", stage: "foundation", nodeId: "security-intro", level: "入门", pricing: "free", lang: "中文", duration: "按需", summary: "正式列表已优先放入具体作品；需要更多内容时再使用平台检索。", url: "https://search.bilibili.com/all?keyword=%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8", searchEntry: true },
+  { id: "d-douyin", title: "抖音：继续查找安全短视频", platform: "抖音", type: "检索", stage: "foundation", nodeId: "security-intro", level: "入门", pricing: "free", lang: "中文", duration: "按需", summary: "抖音登录限制较多，正式视频仍使用具体作品页。", url: "https://www.douyin.com/search/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8", searchEntry: true },
+  { id: "d-xhs", title: "小红书：继续查找安全笔记", platform: "小红书", type: "检索", stage: "foundation", nodeId: "security-intro", level: "入门", pricing: "free", lang: "中文", duration: "按需", summary: "小红书笔记页通常要求登录；具体笔记核验后再加入正式列表。", url: "https://www.xiaohongshu.com/search_result?keyword=%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8", searchEntry: true },
+  { id: "d-portswigger", title: "PortSwigger Web Security Academy", platform: "PortSwigger", type: "靶场", stage: "web-vuln", nodeId: "burp-workflow", level: "基础", pricing: "free", lang: "英文", duration: "按题", summary: "免费 Web 安全互动实验；正式视频之外的动手补充。", url: "https://portswigger.net/web-security", searchEntry: false },
+  { id: "d-heetian", title: "合天网安实验室", platform: "在线靶场", type: "靶场", stage: "pentest", nodeId: "capstone", level: "基础", pricing: "freemium", lang: "中文", duration: "按题", summary: "中文在线实验平台，部分实验需要登录或购买。", url: "https://www.heetian.com/", searchEntry: false },
+  { id: "d-yijing", title: "蚁景网安实验室", platform: "在线靶场", type: "靶场", stage: "web-vuln", nodeId: "sql-injection", level: "基础", pricing: "freemium", lang: "中文", duration: "按题", summary: "中文安全实验平台，按页面提示确认免费或收费实验。", url: "https://www.yijinglab.com/", searchEntry: false },
+];
+
+const RESOURCES = [...VIDEO_RESOURCES, ...DISCOVERY_RESOURCES];
 
 const PRACTICES = [
   { id: "p-env", title: "搭建隔离实验环境", stage: "foundation", nodeId: "virtual-lab", level: "基础", outcome: "Kali 虚拟机 + 本地靶场 + 可恢复快照", safety: "只使用 NAT/Host-only 网络，不连接陌生目标。" },
@@ -177,4 +240,4 @@ const PRACTICES = [
   { id: "p-incident", title: "从日志还原事件时间线", stage: "defense", nodeId: "incident-response", level: "进阶", outcome: "输出发现、遏制、恢复和复盘清单", safety: "使用脱敏教学日志。" },
 ];
 
-window.SECUREPATH_DATA = { STAGES, NODES, TOOLS, RESOURCES, PRACTICES };
+window.SECUREPATH_DATA = { STAGES, NODES, TOOLS, RESOURCES, PRACTICES, SERIES_CATALOG, VIDEO_RESOURCES, DISCOVERY_RESOURCES };
